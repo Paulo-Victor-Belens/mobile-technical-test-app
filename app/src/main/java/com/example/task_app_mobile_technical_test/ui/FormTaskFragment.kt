@@ -1,18 +1,31 @@
 package com.example.task_app_mobile_technical_test.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.task_app_mobile_technical_test.R
 import com.example.task_app_mobile_technical_test.databinding.FragmentFormTaskBinding
+import com.example.task_app_mobile_technical_test.helper.BaseFragment
+import com.example.task_app_mobile_technical_test.helper.FirebaseHelper
+import com.example.task_app_mobile_technical_test.helper.initToolbar
+import com.example.task_app_mobile_technical_test.helper.showBottomSheet
+import com.example.task_app_mobile_technical_test.model.Task
 
-class FormTaskFragment : Fragment() {
+class FormTaskFragment : BaseFragment() {
+
+    private val args: FormTaskFragmentArgs by navArgs()
 
     private var _binding: FragmentFormTaskBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var task: Task
+    private var newTask: Boolean = true
+    private var statusTask: Int = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,6 +36,113 @@ class FormTaskFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
+
+        initClickListeners()
+
+        getArgs()
+    }
+
+    private fun getArgs() {
+        args.task.let {
+            if (it != null) {
+                task = it
+                configTask()
+            }
+        }
+    }
+
+    private fun configTask() {
+        newTask = false
+        statusTask = task.status
+        binding.textToolbar.text = getString(R.string.text_editing_task_form_task_fragment)
+
+        binding.edtDescription.setText(task.description)
+        setStatus()
+    }
+
+    private fun setStatus() {
+        binding.radioGroup.check(
+            when (task.status) {
+                0 -> {
+                    R.id.rbTodo
+                }
+                1 -> {
+                    R.id.rbDoing
+                }
+                else -> {
+                    R.id.rbDone
+                }
+            }
+        )
+    }
+
+    private fun initClickListeners() {
+        binding.btnSave.setOnClickListener {
+           validateTask()
+        }
+
+        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            statusTask = when (checkedId) {
+                R.id.rbTodo -> 0
+                R.id.rbDoing -> 1
+                else -> 2
+            }
+        }
+    }
+
+    private fun validateTask() {
+        val description = binding.edtDescription.text.toString().trim()
+
+        binding.progressBar.isVisible = true
+
+        if (description.isNotEmpty()) {
+
+            hideKeyboard()
+
+            if(newTask) task = Task()
+            task.description = description
+            task.status = statusTask
+
+            saveTask()
+        }  else {
+            showBottomSheet(message = R.string.text_description_empty_form_task_fragment)
+        }
+    }
+
+    private fun saveTask() {
+        FirebaseHelper
+            .getDatabase()
+            .child("tasks")
+            .child(FirebaseHelper.getIdUser().toString())
+            .child(task.id)
+            .setValue(task)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    if (newTask) { // New task
+                        findNavController().popBackStack()
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.text_save_task_success_form_task_fragment,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else { // Edit task
+                        binding.progressBar.isVisible = false
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.text_update_task_success_form_task_fragment,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), R.string.text_error_save_task_form_task_fragment, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }.addOnFailureListener {
+                binding.progressBar.isVisible = false
+                Toast.makeText(requireContext(), R.string.text_error_save_task_form_task_fragment, Toast.LENGTH_SHORT)
+                    .show()
+            }
     }
 
     override fun onDestroyView() {

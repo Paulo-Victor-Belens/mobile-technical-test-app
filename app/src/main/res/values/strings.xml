@@ -5,17 +5,28 @@
     <string name="text_email">E-mail</string>
     <string name="text_password">Password</string>
     <string name="error_generic">An error occurred, please try again later.</string>
+    <string name="text_button_confirm">Confirm</string>
+    <string name="text_task_delete_success">Task removed successfully.</string>
+    <string name="text_task_update_success">Task updated successfully.</string>
+
 
     <!--    Login Fragment Strings -->
     <string name="text_login_fragment">Login</string>
     <string name="text_register_login_fragment">Create an account</string>
     <string name="text_forgot_password_login_fragment">Forgot Password?</string>
+    <string name="text_password_empty_login_fragment">Inform your password.</string>
+    <string name="text_email_empty_login_fragment">Inform your e-mail.</string>
 
-    <!--    Recover Fragment Strings -->
-    <string name="text_send_recover_fragment">Send</string>
-
-    <!--    Register Fragment Strings -->
+    <!--    Register Fragment-->
     <string name="text_create_account_register_fragment">Create Account</string>
+    <string name="text_password_empty_register_fragment">Inform your password.</string>
+    <string name="text_email_empty_register_fragment">Inform your  e-mail.</string>
+
+    <!--    Recover Account Fragment-->
+    <string name="text_toolbar_recover_account_fragment">Retrieve account</string>
+    <string name="text_send_recover_fragment">Send</string>
+    <string name="text_email_empty_recover_account_fragment">Inform your e-mail.</string>
+    <string name="text_email_send_success_recover_account_fragment">Okay, we just sent a link to your email.</string>
 
     <!--    Erros Firebase Authentication-->
     <string name="account_not_registered_register_fragment">No accounts found with this email.</string>
@@ -41,5 +52,26 @@
     <string name="text_update_task_success_form_task_fragment">Task updated successfully.</string>
     <string name="text_error_save_task_form_task_fragment">Error saving task.</string>
 
+    <!--    Adapter Fragment-->
+    <string name="text_button_remove_adapter_fragment">Remove</string>
+    <string name="text_button_edit_adapter_fragment">Edit</string>
+    <string name="text_button_details_adapter_fragment">Details</string>
+    <string name="text_placeholder_adapter_fragment">Optimize application codes to make the application faster</string>
+
+    <!--    To Do Fragment-->
+    <string name="text_task_list_empty_todo_fragment">No Task Found.</string>
+    <string name="text_message_delete_task_todo_fragment">Do you really want to remove this task?</string>
+
+    <!--    Doing Fragment-->
+    <string name="text_task_list_empty_doing_fragment">No Task Found..</string>
+    <string name="text_message_delete_task_doing_fragment">Do you really want to remove this task?</string>
+
+    <!--    Done Fragment-->
+    <string name="text_task_list_empty_done_fragment">No Task Found..</string>
+    <string name="text_message_delete_task_done_fragment">Do you really want to remove this task?</string>
+
+    <!--    BottomSheet-->
+    <string name="text_title_bottom_sheet">attention</string>
+    <string name="text_button_bottom_sheet">I understood</string>
 
 </resources>

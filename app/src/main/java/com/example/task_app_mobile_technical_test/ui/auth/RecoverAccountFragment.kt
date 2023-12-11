@@ -1,19 +1,22 @@
 package com.example.task_app_mobile_technical_test.ui.auth
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import com.example.task_app_mobile_technical_test.R
 import com.example.task_app_mobile_technical_test.databinding.FragmentRecoverAccountBinding
+import com.example.task_app_mobile_technical_test.helper.BaseFragment
 import com.example.task_app_mobile_technical_test.helper.FirebaseHelper
+import com.example.task_app_mobile_technical_test.helper.initToolbar
+import com.example.task_app_mobile_technical_test.helper.showBottomSheet
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class RecoverAccountFragment : Fragment() {
+class RecoverAccountFragment : BaseFragment() {
 
     private var _binding: FragmentRecoverAccountBinding? = null
     private val binding get() = _binding!!
@@ -30,6 +33,7 @@ class RecoverAccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar(binding.toolbar)
 
         auth = Firebase.auth
 
@@ -47,14 +51,15 @@ class RecoverAccountFragment : Fragment() {
         val email = binding.recoveryEmailField.text.toString().trim()
 
         if (email.isNotEmpty()) {
+
+            hideKeyboard()
+
             binding.progressBar.isVisible = true
 
             recoverAccountUser(email)
-
-            Toast.makeText(requireContext(), "Recovery success, A link has been sent to your email!.", Toast.LENGTH_SHORT).show()
         } else {
             binding.progressBar.isVisible = false
-            Toast.makeText(requireContext(), "Email is empty", Toast.LENGTH_SHORT).show()
+            showBottomSheet(message = R.string.text_email_empty_recover_account_fragment)
         }
     }
 
@@ -62,19 +67,16 @@ class RecoverAccountFragment : Fragment() {
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    binding.progressBar.isVisible = false
-                    Toast.makeText(
-                        requireContext(), "Recovery success, A link has been sent to your email!.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showBottomSheet(
+                        message = R.string.text_email_send_success_recover_account_fragment
+                    )
                 } else {
-                    binding.progressBar.isVisible = false
-                    Toast.makeText(
-                        requireContext(),
-                        FirebaseHelper.validError(task.exception.toString()),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showBottomSheet(
+                        message = FirebaseHelper.validError(task.exception?.message ?: "")
+                    )
                 }
+
+                binding.progressBar.isVisible = false
             }
     }
 

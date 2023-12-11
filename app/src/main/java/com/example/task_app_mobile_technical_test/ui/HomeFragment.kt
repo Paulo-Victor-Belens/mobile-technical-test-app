@@ -50,16 +50,16 @@ class HomeFragment : Fragment() {
 
     private fun configTabLayout() {
         val adapter = ViewPageAdapter(requireActivity())
-        binding.viewPage.adapter = adapter
+        binding.viewPager.adapter = adapter
 
         adapter.addFragment(TodoFragment(), "To do")
         adapter.addFragment(DoingFragment(), "Doing")
         adapter.addFragment(DoneFragment(), "Done")
 
-        binding.viewPage.offscreenPageLimit = adapter.itemCount
+        binding.viewPager.offscreenPageLimit = adapter.itemCount
 
         TabLayoutMediator(
-            binding.tabLayout, binding.viewPage
+            binding.tabLayout, binding.viewPager
         ) { tab, position ->
             tab.text = adapter.getTitle(position)
         }.attach()

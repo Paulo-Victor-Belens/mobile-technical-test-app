@@ -20,11 +20,11 @@ class ViewPageAdapter(fragmentActivity: FragmentActivity) :
         titleList.add(title)
     }
 
-    override fun getItemCount(): Int {
-        return fragmentList.size
-    }
-
     override fun createFragment(position: Int): Fragment {
         return fragmentList[position]
+    }
+
+    override fun getItemCount(): Int {
+        return fragmentList.size
     }
 }
